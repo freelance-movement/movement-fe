@@ -13,6 +13,8 @@ export default defineConfig({
     allowedHosts: true
   },
   preview: {
-    allowedHosts: ['movement-fe.toantran12.com']
+    allowedHosts: ['movement-fe.toantran12.com'],
+    port: 4173,
+    host: true,
   }
 });
