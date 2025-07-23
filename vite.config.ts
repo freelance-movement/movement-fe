@@ -9,4 +9,7 @@ export default defineConfig({
       "@": fileURLToPath(new URL("./src", import.meta.url)), // Thêm dòng này
     },
   },
+  server: {
+    allowedHosts: true
+  }
 });
