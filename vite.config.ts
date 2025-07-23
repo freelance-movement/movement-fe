@@ -11,5 +11,8 @@ export default defineConfig({
   },
   server: {
     allowedHosts: true
+  },
+  preview: {
+    allowedHosts: ['movement-fe.toantran12.com']
   }
 });
