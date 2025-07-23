@@ -4,7 +4,6 @@
 FROM node:22-alpine AS build
 WORKDIR /app
 COPY package*.json ./
-# Cài đặt TẤT CẢ dependencies, bao gồm cả devDependencies
 RUN npm install
 COPY . .
 RUN npm run build
@@ -15,15 +14,16 @@ RUN npm run build
 FROM node:22-alpine
 WORKDIR /app
 
-# Sao chép các tệp cần thiết từ giai đoạn build
+# Chỉ sao chép các file cần thiết để chạy
 COPY --from=build /app/package*.json ./
-# QUAN TRỌNG: Sao chép node_modules đã được cài đặt ở stage 1
-# Điều này đảm bảo `vite` tồn tại để chạy lệnh preview
-COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 
-# Mở cổng 4173 (cổng mặc định của `vite preview`)
-EXPOSE 4173
+# QUAN TRỌNG: Chỉ cài đặt production dependencies (như `serve`)
+# Image sẽ nhẹ hơn rất nhiều vì không chứa devDependencies (vite, eslint,...)
+RUN npm install --omit=dev
 
-# Lệnh để khởi động server preview, `--host` để truy cập từ bên ngoài container
-CMD ["npm", "run", "preview", "--", "--host"]
+# Mở cổng mà `serve` sẽ lắng nghe (theo cấu hình trong package.json)
+EXPOSE 8080
+
+# Chạy lệnh start đã định nghĩa trong package.json
+CMD ["npm", "run", "start"]
